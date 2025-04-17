@@ -1,0 +1,508 @@
+/* Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #eee;
+  background-color: #121212;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Styles */
+header {
+  background-color: #1a1a1a;
+  padding: 15px 20px;
+  border-bottom: 1px solid #333;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo i {
+  font-size: 2rem;
+  color: #1DB954;
+  margin-right: 15px;
+}
+
+h1 {
+  font-size: 1.8rem;
+  color: #1DB954;
+  font-weight: bold;
+}
+
+.stats-bar {
+  display: flex;
+  justify-content: space-between;
+  background-color: #252525;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.stats-bar span {
+  color: #1DB954;
+  font-weight: bold;
+}
+
+/* Main Content Styles */
+main {
+  flex: 1;
+}
+
+/* Login Section */
+.login-container {
+  background-color: #1a1a1a;
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 600px;
+  margin: 60px auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.login-container h2 {
+  color: #1DB954;
+  margin-bottom: 20px;
+}
+
+.login-container p {
+  margin-bottom: 30px;
+  color: #aaa;
+}
+
+.login-btn {
+  display: inline-block;
+  background-color: #1DB954;
+  color: white;
+  padding: 12px 30px;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: bold;
+  transition: all 0.3s;
+  border: none;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background-color: #1ed760;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+}
+
+/* Tabs Styles */
+.tabs-container {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.tabs-header {
+  display: flex;
+  background-color: #252525;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  scrollbar-color: #1DB954 #333;
+}
+
+.tabs-header::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tabs-header::-webkit-scrollbar-track {
+  background: #333;
+}
+
+.tabs-header::-webkit-scrollbar-thumb {
+  background-color: #1DB954;
+  border-radius: 6px;
+}
+
+.tab {
+  padding: 15px 25px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-bottom: 3px solid transparent;
+  color: #aaa;
+  font-weight: bold;
+}
+
+.tab:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.tab.active {
+  border-bottom: 3px solid #1DB954;
+  color: #1DB954;
+  background-color: #2a2a2a;
+}
+
+#snapshots-tab-container {
+  display: flex;
+  overflow-x: auto;
+}
+
+.tab-content {
+  display: none;
+  padding: 20px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #252525;
+  border-radius: 30px;
+  padding: 5px 15px;
+  flex: 1;
+  max-width: 400px;
+}
+
+#search-input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 8px 10px;
+  width: 100%;
+  outline: none;
+}
+
+#search-btn {
+  background: transparent;
+  border: none;
+  color: #1DB954;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-container label {
+  color: #aaa;
+}
+
+#sort-select {
+  background-color: #252525;
+  color: #fff;
+  border: 1px solid #333;
+  padding: 8px 12px;
+  border-radius: 4px;
+  outline: none;
+}
+
+/* Tracks List */
+.tracks-list-header {
+  display: grid;
+  grid-template-columns: 50px 3fr 2fr 1fr 80px;
+  padding: 10px 20px;
+  background-color: #252525;
+  color: #aaa;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.track-item {
+  display: grid;
+  grid-template-columns: 50px 3fr 2fr 1fr 80px;
+  padding: 12px 20px;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  transition: background-color 0.2s;
+}
+
+.track-item:hover {
+  background-color: #252525;
+}
+
+.track-number {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.track-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.track-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.track-details {
+  overflow: hidden;
+}
+
+.track-name {
+  font-weight: bold;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-artist {
+  color: #aaa;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-album {
+  color: #aaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-date-added {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.track-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.track-action-btn {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+
+.track-action-btn:hover {
+  color: #1DB954;
+}
+
+/* Loading Indicator */
+#loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #aaa;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(29, 185, 84, 0.3);
+  border-radius: 50%;
+  border-top-color: #1DB954;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Audio Player */
+#audio-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #111;
+  padding: 10px 20px;
+  border-top: 1px solid #333;
+  z-index: 100;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.now-playing {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#player-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+#player-track-name {
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+#player-artist-name {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+audio {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Footer */
+footer {
+  background-color: #1a1a1a;
+  padding: 20px;
+  text-align: center;
+  margin-top: 30px;
+  border-top: 1px solid #333;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
+
+.error-message {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #ff6b6b;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 8px;
+  border-left: 5px solid #dc3545;
+}
+
+/* User Info */
+#user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-name {
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .track-item, .tracks-list-header {
+    grid-template-columns: 40px 3fr 2fr 80px;
+  }
+  
+  .track-date-added {
+    display: none;
+  }
+  
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-container {
+    max-width: 100%;
+  }
+  
+  .player-controls {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .track-item, .tracks-list-header {
+    grid-template-columns: 40px 3fr 80px;
+  }
+  
+  .track-album {
+    display: none;
+  }
+  
+  .logo i {
+    font-size: 1.5rem;
+  }
+  
+  h1 {
+    font-size: 1.4rem;
+  }
+  
+  .stats-bar {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

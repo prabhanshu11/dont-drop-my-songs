@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Don't Drop My Songs</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-container">
+        <div class="logo">
+          <i class="fas fa-music"></i>
+          <h1>Don't Drop My Songs</h1>
+        </div>
+        <div id="user-profile" class="hidden">
+          <div id="user-info"></div>
+        </div>
+      </div>
+      <div class="stats-bar">
+        <div id="total-tracks">Total Tracks: <span>0</span></div>
+        <div id="last-updated">Last Updated: <span>Never</span></div>
+      </div>
+    </header>
+
+    <main>
+      <div id="login-section">
+        <div class="login-container">
+          <h2>Welcome to Your Spotify Library Archive</h2>
+          <p>Connect with your Spotify account to see your liked tracks and keep track of your collection over time.</p>
+          <a href="/login" class="login-btn">Login with Spotify</a>
+        </div>
+      </div>
+
+      <div id="tracks-section" class="hidden">
+        <div class="tabs-container">
+          <div class="tabs-header">
+            <div class="tab active" data-tab="current">Current Library</div>
+            <div id="snapshots-tab-container"></div>
+          </div>
+          
+          <div class="tab-content active" id="current-tab">
+            <div class="controls">
+              <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search tracks...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+              </div>
+              <div class="sort-container">
+                <label for="sort-select">Sort by:</label>
+                <select id="sort-select">
+                  <option value="date-desc">Date Added (Newest)</option>
+                  <option value="date-asc">Date Added (Oldest)</option>
+                  <option value="name-asc">Name (A-Z)</option>
+                  <option value="name-desc">Name (Z-A)</option>
+                  <option value="artist-asc">Artist (A-Z)</option>
+                  <option value="artist-desc">Artist (Z-A)</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="tracks-list-header">
+              <div class="track-number">#</div>
+              <div class="track-info-header">TRACK</div>
+              <div class="track-album">ALBUM</div>
+              <div class="track-date-added">DATE ADDED</div>
+              <div class="track-actions"></div>
+            </div>
+            
+            <div id="tracks-container"></div>
+            <div id="loading" class="hidden">
+              <div class="spinner"></div>
+              <p>Loading your tracks...</p>
+            </div>
+          </div>
+          
+          <div id="snapshot-tabs-content"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <p>&copy; 2025 Don't Drop My Songs</p>
+        <p>A Napster-era inspired Spotify library tracker</p>
+      </div>
+    </footer>
+  </div>
+
+  <div id="audio-player" class="hidden">
+    <div class="player-controls">
+      <div class="now-playing">
+        <img id="player-img" src="https://via.placeholder.com/40" alt="Album cover">
+        <div class="track-info">
+          <div id="player-track-name">No track playing</div>
+          <div id="player-artist-name"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <audio id="audio-element" controls></audio>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
