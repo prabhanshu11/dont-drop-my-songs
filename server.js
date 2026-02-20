@@ -42,12 +42,12 @@ app.get('/', (req, res) => {
 // Login route to initiate Spotify authorization
 app.get('/login', (req, res) => {
   const state = generateRandomString(16);
-  const scope = 'user-library-read user-read-private user-read-email';
+  const scope = 'user-library-read user-read-private user-read-email user-read-recently-played';
 
   console.log('Redirecting to Spotify authorization with:');
   console.log('Client ID:', CLIENT_ID);
   console.log('Redirect URI:', REDIRECT_URI);
-  
+
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -87,7 +87,7 @@ app.get('/callback', async (req, res) => {
   try {
     console.log('Received code from Spotify, attempting to exchange for token');
     console.log('Redirect URI being used:', REDIRECT_URI);
-    
+
     // Exchange authorization code for access token
     const tokenResponse = await axios({
       method: 'post',
@@ -105,7 +105,7 @@ app.get('/callback', async (req, res) => {
 
     console.log('Successfully obtained token from Spotify');
     const { access_token, refresh_token } = tokenResponse.data;
-    
+
     // Redirect to the frontend with tokens as URL parameters
     res.redirect('/#' +
       querystring.stringify({
@@ -129,7 +129,7 @@ app.get('/callback', async (req, res) => {
 async function fetchAllLikedTracks(access_token) {
   let allTracks = [];
   let nextUrl = 'https://api.spotify.com/v1/me/tracks?limit=50';
-  
+
   while (nextUrl) {
     try {
       const response = await axios.get(nextUrl, {
@@ -137,10 +137,10 @@ async function fetchAllLikedTracks(access_token) {
           'Authorization': `Bearer ${access_token}`
         }
       });
-      
+
       allTracks = [...allTracks, ...response.data.items];
       console.log(`Fetched ${response.data.items.length} tracks, total so far: ${allTracks.length}`);
-      
+
       // Check if there are more tracks to fetch
       nextUrl = response.data.next;
     } catch (error) {
@@ -148,7 +148,7 @@ async function fetchAllLikedTracks(access_token) {
       throw error;
     }
   }
-  
+
   return allTracks;
 }
 
@@ -156,7 +156,7 @@ async function fetchAllLikedTracks(access_token) {
 app.get('/api/liked-tracks', async (req, res) => {
   console.log('Received request to /api/liked-tracks');
   const { access_token, snapshot_id } = req.query;
-  
+
   if (!access_token && !snapshot_id) {
     console.error('No access token or snapshot ID provided');
     return res.status(401).json({ error: 'Access token or snapshot ID is required' });
@@ -177,12 +177,12 @@ app.get('/api/liked-tracks', async (req, res) => {
   try {
     console.log('Fetching all liked tracks from Spotify API');
     const allTracks = await fetchAllLikedTracks(access_token);
-    
+
     console.log(`Successfully fetched all liked tracks: ${allTracks.length} tracks`);
-    
+
     // Check if we should save a snapshot
     const shouldSaveSnapshot = db.isMoreThan24HoursSinceLastSnapshot() || !db.wasSnapshotTakenToday();
-    
+
     if (shouldSaveSnapshot) {
       console.log('Saving new snapshot of tracks');
       const snapshot = db.saveSnapshot(allTracks);
@@ -190,22 +190,22 @@ app.get('/api/liked-tracks', async (req, res) => {
     } else {
       console.log('Skipping snapshot, already taken today or less than 24 hours since last one');
     }
-    
+
     res.json({ items: allTracks, total: allTracks.length });
   } catch (error) {
     console.error('Error fetching liked tracks:', error.message);
-    
+
     if (error.response) {
       console.error('Error response status:', error.response.status);
       console.error('Error response data:', JSON.stringify(error.response.data));
-      
+
       // Return the actual error from Spotify
       return res.status(error.response.status).json({
         error: 'Failed to fetch liked tracks',
         spotify_error: error.response.data
       });
     }
-    
+
     res.status(500).json({ error: 'Failed to fetch liked tracks' });
   }
 });
@@ -218,6 +218,56 @@ app.get('/api/snapshots', (req, res) => {
   } catch (error) {
     console.error('Error fetching snapshots:', error.message);
     res.status(500).json({ error: 'Failed to fetch snapshots' });
+  }
+});
+
+// History Test Endpoint
+app.get('/api/history-test', async (req, res) => {
+  const { access_token } = req.query;
+
+  if (!access_token) {
+    return res.status(401).json({ error: 'Access token is required' });
+  }
+
+  let allHistory = [];
+  let nextUrl = 'https://api.spotify.com/v1/me/player/recently-played?limit=50';
+
+  try {
+    console.log('Starting history fetch...');
+    while (nextUrl) {
+      const response = await axios.get(nextUrl, {
+        headers: { 'Authorization': `Bearer ${access_token}` }
+      });
+
+      const items = response.data.items;
+      if (!items || items.length === 0) break;
+
+      allHistory = [...allHistory, ...items];
+      console.log(`Fetched ${items.length} items. Total: ${allHistory.length}`);
+
+      nextUrl = response.data.next;
+    }
+
+    // Find oldest
+    let oldest = null;
+    if (allHistory.length > 0) {
+      oldest = allHistory[allHistory.length - 1].played_at;
+    }
+
+    res.json({
+      total_items: allHistory.length,
+      oldest_played_at: oldest,
+      oldest_human: oldest ? moment(oldest).format('YYYY-MM-DD HH:mm:ss') : null,
+      items_sample: allHistory.slice(0, 5) // Show first 5
+    });
+
+  } catch (error) {
+    console.error('Error fetching history:', error.message);
+    if (error.response) {
+      console.error(error.response.data);
+      return res.status(error.response.status).json(error.response.data);
+    }
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -239,7 +289,7 @@ async function refreshAccessToken(refresh_token) {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
-    
+
     return response.data.access_token;
   } catch (error) {
     console.error('Error refreshing token:', error.message);
@@ -253,11 +303,11 @@ let latestRefreshToken = null;
 // Function to capture refresh token
 app.post('/api/store-refresh-token', (req, res) => {
   const { refresh_token } = req.body;
-  
+
   if (!refresh_token) {
     return res.status(400).json({ error: 'Refresh token is required' });
   }
-  
+
   latestRefreshToken = refresh_token;
   console.log('Stored refresh token for scheduled updates');
   res.json({ success: true });
@@ -266,25 +316,25 @@ app.post('/api/store-refresh-token', (req, res) => {
 // Schedule a job to run every 24 hours to update the snapshot
 const scheduledJob = schedule.scheduleJob('0 0 * * *', async () => {
   console.log('Running scheduled snapshot update');
-  
+
   if (!latestRefreshToken) {
     console.log('No refresh token available, skipping scheduled update');
     return;
   }
-  
+
   try {
     // Refresh the access token
     const access_token = await refreshAccessToken(latestRefreshToken);
-    
+
     if (!access_token) {
       console.log('Failed to refresh access token, skipping scheduled update');
       return;
     }
-    
+
     // Fetch all tracks
     const allTracks = await fetchAllLikedTracks(access_token);
     console.log(`Scheduled update: Fetched ${allTracks.length} tracks`);
-    
+
     // Save a new snapshot
     const snapshot = db.saveSnapshot(allTracks);
     console.log(`Scheduled update: Saved snapshot #${snapshot.snapshotId} with ${snapshot.totalTracks} tracks`);
